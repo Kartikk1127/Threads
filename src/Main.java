@@ -1,12 +1,9 @@
 public class Main {
     public static void main(String[] args) {
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("runnable running");
-                System.out.println("runnable finished");
-            }
+        Runnable runnable = () -> {
+            System.out.println("lambda running");
+            System.out.println("lambda finished");
         };
 
         Thread thread = new Thread(runnable);
