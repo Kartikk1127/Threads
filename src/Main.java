@@ -2,11 +2,11 @@ public class Main {
     public static void main(String[] args) {
 
         Runnable runnable = () -> {
-            System.out.println("lambda running");
-            System.out.println("lambda finished");
+            String threadName = Thread.currentThread().getName();
+            System.out.println(threadName + " running");
         };
 
-        Thread thread = new Thread(runnable);
+        Thread thread = new Thread(runnable, "The Thread");
 
         thread.start();
 
