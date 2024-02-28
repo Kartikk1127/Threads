@@ -1,29 +1,38 @@
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
 
 
     public static void main(String[] args) {
 
-        // create runnable and create and start a virtual thread
-        Runnable runnable = ()->{
-          for (int i=0;i<10;i++){
-              System.out.println("Index: " + i);
-          }
-        };
+        List<Thread> vThreads = new ArrayList<>();
 
-        Thread vThread1 = Thread.ofVirtual().start(runnable);
+        int vThreadCount = 100000;
 
-        //create but do not start virtual thread
-        Thread vThreadUnstarted = Thread.ofVirtual().unstarted(runnable);
+        for(int i=0;i<vThreadCount;i++)
+        {
+            int vThreadIndex = i;
+            Thread vThread = Thread.ofVirtual().start(()->{
+               int result = 1;
+               for(int j=0;j<10;j++){
+                   result*=(j+1);
+               }
+                System.out.println("Result[" + vThreadIndex +"]: " + result);
+            });
 
-        vThreadUnstarted.start();
-
-        //how to join a virtual thread
-        try {
-            vThreadUnstarted.join();
-        } catch (InterruptedException e){
-            e.printStackTrace();
+            vThreads.add(vThread);
         }
 
+        for (int i=0;i<vThreads.size();i++)
+        {
+            try {
+                vThreads.get(i).join();
+            } catch (InterruptedException e){
+                throw new RuntimeException(e);
+            }
+        }
 
     }
 }
