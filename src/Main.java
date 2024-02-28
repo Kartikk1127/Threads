@@ -1,52 +1,28 @@
 public class Main {
 
-    public static class StoppableRunnable implements Runnable{
 
-        private boolean stopRequested = false;
-
-        public synchronized void requestStop(){
-            this.stopRequested = true;
-        }
-
-        public synchronized boolean isStopRequested() {
-            return this.stopRequested;
-        }
-
-        public void sleep(long millis){
-            try {
-                Thread.sleep(millis);
-            } catch (InterruptedException e){
-                e.printStackTrace();
-            }
-        }
-        @Override
-        public void run() {
-            System.out.println("StoppableRunnable running");
-
-            while (!isStopRequested()){
-                sleep(1000);
-                System.out.println("...");
-            }
-
-            System.out.println("StoppableRunnable finished");
-
-        }
-    }
     public static void main(String[] args) {
 
-        StoppableRunnable runnable = new StoppableRunnable();
-        Thread thread1 = new Thread(runnable, "The Thread ");
-        thread1.start();
+        // create runnable and create and start a virtual thread
+        Runnable runnable = ()->{
+          for (int i=0;i<10;i++){
+              System.out.println("Index: " + i);
+          }
+        };
 
+        Thread vThread1 = Thread.ofVirtual().start(runnable);
+
+        //create but do not start virtual thread
+        Thread vThreadUnstarted = Thread.ofVirtual().unstarted(runnable);
+
+        vThreadUnstarted.start();
+
+        //how to join a virtual thread
         try {
-            Thread.sleep(5000);
-        }catch (InterruptedException e){
+            vThreadUnstarted.join();
+        } catch (InterruptedException e){
             e.printStackTrace();
         }
-
-        System.out.println("requesting stop");
-        runnable.requestStop();
-        System.out.println("stop requested");
 
 
     }
