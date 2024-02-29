@@ -4,35 +4,29 @@ import java.util.List;
 
 public class Main {
 
+    public static class MyRunnable implements Runnable{
+
+        private int count = 0;
+
+        @Override
+        public void run() {
+
+            for(int i=0;i<1000000;i++){
+                this.count++;
+            }
+            System.out.println(Thread.currentThread().getName()+": "+count);
+        }
+    }
 
     public static void main(String[] args) {
 
-        List<Thread> vThreads = new ArrayList<>();
+        MyRunnable runnable1 = new MyRunnable();
+        MyRunnable runnable2 = new MyRunnable();
 
-        int vThreadCount = 100000;
+        Thread thread1 = new Thread(runnable1);
+        Thread thread2 = new Thread(runnable2);
 
-        for(int i=0;i<vThreadCount;i++)
-        {
-            int vThreadIndex = i;
-            Thread vThread = Thread.ofVirtual().start(()->{
-               int result = 1;
-               for(int j=0;j<10;j++){
-                   result*=(j+1);
-               }
-                System.out.println("Result[" + vThreadIndex +"]: " + result);
-            });
-
-            vThreads.add(vThread);
-        }
-
-        for (int i=0;i<vThreads.size();i++)
-        {
-            try {
-                vThreads.get(i).join();
-            } catch (InterruptedException e){
-                throw new RuntimeException(e);
-            }
-        }
-
+        thread1.start();
+        thread2.start();
     }
 }
