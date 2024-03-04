@@ -1,15 +1,10 @@
 
 /*
-To fix this issue, we need to ensure that the update to hasNewFrame and the
-assignment of the new frame are treated as an atomic operation, meaning they
-should not be reordered. We can use synchronization mechanisms like synchronized
-blocks or the volatile keyword.
-
-In this corrected version, the hasNewFrame variable is marked as volatile, ensuring that
-changes to it are visible to other threads. Additionally, synchronized blocks are used to
-ensure atomicity when updating both frame and hasNewFrame. This prevents the potential
-issue of instruction reordering and ensures proper synchronization between the producing
-and drawing threads.
+when the hasNewFrame variable is set to true, the frame and frameStoredCount
+will also be synchronized to main memory. Additionally, every time the drawing
+thread reads the hasNewFrame variable in the while-loop inside the takeFrame() method,
+the frame and framesStoredCount will also be refreshed from main memory.
+Even framesTakenCount will get updated from main memory at this point.
 *  */
 
 public class FrameExchanger {
